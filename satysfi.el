@@ -7,6 +7,7 @@
 
 (provide 'satysfi)
 
+
 (defface satysfi-row-command-face
   '((t (:foreground "#8888ff" :background "dark")))
   "SATySFi row command")
@@ -27,11 +28,40 @@
   '((t (:foreground "#ffff44" :background "dark")))
   "SATySFi literal area")
 
+
+(defun satysfi-mode/insert-pair-scheme (open-string close-string)
+  (cond ((use-region-p)
+         (let ((rb (region-beginning)))
+           (let ((re (region-end)))
+             (progn
+               (goto-char rb)
+               (insert open-string)
+               (goto-char (1+ re))
+               (insert close-string)
+               (forward-char -1)))))
+        (t
+         (progn
+           (insert (format "%s%s" open-string close-string))
+           (forward-char -1)))))
+
+(defun satysfi-mode/insert-paren-pair ()
+  (interactive)
+  (satysfi-mode/insert-pair-scheme "(" ")"))
+
+(defun satysfi-mode/insert-brace-pair ()
+  (interactive)
+  (satysfi-mode/insert-pair-scheme "{" "}"))
+
+(defvar satysfi-mode-map (copy-keymap global-map))
+(define-key satysfi-mode-map (kbd "(") 'satysfi-mode/insert-paren-pair)
+(define-key satysfi-mode-map (kbd "{") 'satysfi-mode/insert-brace-pair)
+
+
 (define-generic-mode satysfi-mode
   '(?%)
 
-  '("let" "let-mutable" "let-row" "let-col" "in" "and"
-    "match" "with" "when" "as" "if" "then" "else"
+  '("let" "let-mutable" "let-inline" "let-block" "let-math" "in" "and"
+    "match" "with" "when" "as" "if" "then" "else" "fun"
     "type" "constraint" "val" "direct" "of"
     "module" "struct" "sig" "end"
     "before" "while" "do"
@@ -49,31 +79,4 @@
      (1 'satysfi-literal-area t)))
 
   nil
-  '())
-
-(defun satysfi-mode/insert-pair-scheme (open-string close-string)
-  (cond ((use-region-p)
-         (let ((rb (region-beginning)))
-           (let ((re (region-end)))
-             (progn
-               (goto-char rb)
-               (insert open-string)
-               (goto-char (1+ re))
-               (insert open-string)
-               (forward-char -1)))))
-        (t
-         (progn
-           (insert (format "%s%s" open-string close-string))
-           (forward-char -1)))))
-
-(defun satysfi-mode/insert-paren-pair ()
-  (interactive)
-  (satysfi-mode/insert-pair-scheme "(" ")"))
-
-(defun satysfi-mode/insert-brace-pair ()
-  (interactive)
-  (satysfi-mode/insert-pair-scheme "{" "}"))
-
-(defvar satysfi-mode-map (make-sparse-keymap))
-(define-key satysfi-mode-map (kbd "(") 'satysfi-mode/insert-paren-pair)
-(define-key satysfi-mode-map (kbd "{") 'satysfi-mode/insert-brace-pair)
+  '((lambda () (use-local-map satysfi-mode-map))))
