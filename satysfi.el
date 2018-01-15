@@ -36,7 +36,7 @@
              (progn
                (goto-char rb)
                (insert open-string)
-               (goto-char (1+ re))
+               (goto-char (+ (length open-string) re))
                (insert close-string)
                (forward-char -1)))))
         (t
@@ -52,10 +52,24 @@
   (interactive)
   (satysfi-mode/insert-pair-scheme "{" "}"))
 
+(defun satysfi-mode/insert-square-bracket-pair ()
+  (interactive)
+  (satysfi-mode/insert-pair-scheme "[" "]"))
+
+(defun satysfi-mode/insert-angle-bracket-pair ()
+  (interactive)
+  (satysfi-mode/insert-pair-scheme "<" ">"))
+
+(defun satysfi-mode/insert-math-brace-pair ()
+  (interactive)
+  (satysfi-mode/insert-pair-scheme "${" "}"))
+
 (defvar satysfi-mode-map (copy-keymap global-map))
 (define-key satysfi-mode-map (kbd "(") 'satysfi-mode/insert-paren-pair)
+(define-key satysfi-mode-map (kbd "[") 'satysfi-mode/insert-square-bracket-pair)
+(define-key satysfi-mode-map (kbd "<") 'satysfi-mode/insert-angle-bracket-pair)
 (define-key satysfi-mode-map (kbd "{") 'satysfi-mode/insert-brace-pair)
-
+(define-key satysfi-mode-map (kbd "$") 'satysfi-mode/insert-math-brace-pair)
 
 (define-generic-mode satysfi-mode
   '(?%)
