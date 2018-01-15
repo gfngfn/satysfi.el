@@ -60,7 +60,7 @@
 (define-generic-mode satysfi-mode
   '(?%)
 
-  '("let" "let-mutable" "let-inline" "let-block" "let-math" "in" "and"
+  '("let" "let-rec" "let-mutable" "let-inline" "let-block" "let-math" "in" "and"
     "match" "with" "when" "as" "if" "then" "else" "fun"
     "type" "constraint" "val" "direct" "of"
     "module" "struct" "sig" "end"
