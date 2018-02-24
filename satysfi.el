@@ -71,6 +71,7 @@
 (define-key satysfi-mode-map (kbd "{") 'satysfi-mode/insert-brace-pair)
 (define-key satysfi-mode-map (kbd "$") 'satysfi-mode/insert-math-brace-pair)
 
+;;;###autoload
 (define-generic-mode satysfi-mode
   '(?%)
 
@@ -94,3 +95,8 @@
 
   nil
   '((lambda () (use-local-map satysfi-mode-map))))
+
+;;;###autoload
+(add-to-list 'auto-mode-alist
+             '("\\.\\(saty\\|satyh\\)\\'"
+               . satysfi-mode))
