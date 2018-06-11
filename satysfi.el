@@ -1,9 +1,6 @@
 ;;; satysfi.el --- SATySFi                      -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2017  Takashi SUWA
-
-;; Author: Takashi SUWA
-;; Keywords:
+;; Copyright (C) 2017-2018 Takashi SUWA
 
 (provide 'satysfi)
 
@@ -28,6 +25,9 @@
   '((t (:foreground "#ffff44" :background "dark")))
   "SATySFi literal area")
 
+(defvar satysfi-pdf-viewer-command "open")
+
+(defvar satysfi-command "satysfi -b")
 
 (defun satysfi-mode/insert-pair-scheme (open-string close-string)
   (cond ((use-region-p)
@@ -64,12 +64,27 @@
   (interactive)
   (satysfi-mode/insert-pair-scheme "${" "}"))
 
+(defun satysfi-mode/open-pdf ()
+  (interactive)
+  (let ((pdf-file-path (concat (file-name-sans-extension buffer-file-name) ".pdf")))
+    (progn
+      (message "Opening '%s' ..." pdf-file-path)
+      (async-shell-command (format "%s %s\n" satysfi-pdf-viewer-command pdf-file-path)))))
+
+(defun satysfi-mode/typeset ()
+  (interactive)
+  (progn
+    (message "Typesetting '%s' ..." buffer-file-name)
+    (async-shell-command (format "%s %s\n" satysfi-command buffer-file-name))))
+
 (defvar satysfi-mode-map (copy-keymap global-map))
 (define-key satysfi-mode-map (kbd "(") 'satysfi-mode/insert-paren-pair)
 (define-key satysfi-mode-map (kbd "[") 'satysfi-mode/insert-square-bracket-pair)
 (define-key satysfi-mode-map (kbd "<") 'satysfi-mode/insert-angle-bracket-pair)
 (define-key satysfi-mode-map (kbd "{") 'satysfi-mode/insert-brace-pair)
 (define-key satysfi-mode-map (kbd "$") 'satysfi-mode/insert-math-brace-pair)
+(define-key satysfi-mode-map (kbd "C-c C-t") 'satysfi-mode/typeset)
+(define-key satysfi-mode-map (kbd "C-c C-f") 'satysfi-mode/open-pdf)
 
 (define-generic-mode satysfi-mode
   '(?%)
@@ -89,8 +104,8 @@
      (1 'satysfi-var-in-string-face t))
     ("\\(\\\\\\(?:@\\|`\\|\\*\\| \\|%\\||\\|;\\|{\\|}\\|\\\\\\)\\)"
      (1 'satysfi-escaped-character t))
-    ("\\(`\\(?:[^`]\\|\\n\\)+`\\)"
-     (1 'satysfi-literal-area t)))
+;    ("\\(`\\(?:[^`]\\|\\n\\)+`\\)" (1 'satysfi-literal-area t))
+    )
 
   nil
   '((lambda () (use-local-map satysfi-mode-map))))
