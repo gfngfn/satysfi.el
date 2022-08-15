@@ -5,24 +5,24 @@
 (provide 'satysfi)
 
 
-(defface satysfi-row-command-face
-  '((t (:foreground "#8888ff" :background "dark")))
-  "SATySFi row command")
+(defface satysfi-inline-command-face
+  '((t (:foreground "#8888ff")))
+  "SATySFi inline command")
 
-(defface satysfi-column-command-face
-  '((t (:foreground "#ff8888" :background "dark")))
-  "SATySFi column command")
+(defface satysfi-block-command-face
+  '((t (:foreground "#ff8888")))
+  "SATySFi block command")
 
 (defface satysfi-var-in-string-face
-  '((t (:foreground "#44ff88" :background "dark")))
+  '((t (:foreground "#44ff88")))
   "SATySFi variable in string")
 
 (defface satysfi-escaped-character
-  '((t (:foreground "#cc88ff" :background "dark")))
+  '((t (:foreground "#cc88ff")))
   "SATySFi escaped character")
 
 (defface satysfi-literal-area
-  '((t (:foreground "#ffff44" :background "dark")))
+  '((t (:foreground "#ffff44")))
   "SATySFi literal area")
 
 (defvar satysfi-pdf-viewer-command "open")
@@ -96,13 +96,13 @@
     "before" "while" "do"
     "controls" "cycle")
 
-  '(("\\(\\\\\\(?:\\\\\\\\\\)*[a-zA-Z0-9\\-]+\\)\\>"
-     (1 'satysfi-row-command-face t))
-    ("\\(\\+[a-zA-Z0-9\\-]+\\)\\>"
-     (1 'satysfi-column-command-face t))
+  '(("\\(\\\\\\(?:\\\\\\\\\\)*\\([a-zA-Z0-9\\-]+\\.\\)*[a-zA-Z0-9\\-]+\\)\\>"
+     (1 'satysfi-inline-command-face t))
+    ("\\(\\+\\([a-zA-Z0-9\\-]+\\.\\)*[a-zA-Z0-9\\-]+\\)\\>"
+     (1 'satysfi-block-command-face t))
     ("\\(@[a-z][0-9A-Za-z\\-]*\\)\\>"
      (1 'satysfi-var-in-string-face t))
-    ("\\(\\\\\\(?:@\\|`\\|\\*\\| \\|%\\||\\|;\\|{\\|}\\|\\\\\\)\\)"
+    ("\\(\\\\\\(?:@\\|`\\|\\*\\| \\|%\\||\\|;\\|{\\|}\\|<\\|>\\|\\$\\|#\\|\\\\\\)\\)"
      (1 'satysfi-escaped-character t))
 ;    ("\\(`\\(?:[^`]\\|\\n\\)+`\\)" (1 'satysfi-literal-area t))
     )
