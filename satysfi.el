@@ -89,12 +89,9 @@
 (define-generic-mode satysfi-mode
   '(?%)
 
-  '("let" "let-rec" "let-mutable" "let-inline" "let-block" "let-math" "in" "and"
-    "match" "with" "when" "as" "if" "then" "else" "fun"
-    "type" "constraint" "val" "direct" "of"
-    "module" "struct" "sig" "end"
-    "before" "while" "do"
-    "controls" "cycle")
+  '("and" "as" "block" "command" "else" "end" "false" "fun"
+    "if" "in" "include" "inline" "let" "mod" "match" "math" "module" "mutable" "of" "open" "persistent"
+    "rec" "sig" "signature" "struct" "then" "true" "type" "val" "with")
 
   '(("\\(\\\\\\(?:\\\\\\\\\\)*\\([a-zA-Z0-9\\-]+\\.\\)*[a-zA-Z0-9\\-]+\\)\\>"
      (1 'satysfi-inline-command-face t))
