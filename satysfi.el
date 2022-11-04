@@ -27,7 +27,7 @@
 
 (defvar satysfi-pdf-viewer-command "open")
 
-(defvar satysfi-command "satysfi -b")
+(defvar satysfi-command "satysfi")
 
 (defun satysfi-mode/insert-pair-scheme (open-string close-string)
   (cond ((use-region-p)
@@ -90,8 +90,8 @@
   '(?%)
 
   '("and" "as" "block" "command" "else" "end" "false" "fun"
-    "if" "in" "include" "inline" "let" "mod" "match" "math" "module" "mutable" "of" "open" "persistent"
-    "rec" "sig" "signature" "struct" "then" "true" "type" "val" "with")
+    "if" "in" "include" "inline" "let" "mod" "match" "math" "module" "mutable" "of" "open" "package" "persistent"
+    "rec" "sig" "signature" "struct" "then" "true" "type" "use" "val" "with")
 
   '(("\\(\\\\\\(?:\\\\\\\\\\)*\\([a-zA-Z0-9\\-]+\\.\\)*[a-zA-Z0-9\\-]+\\)\\>"
      (1 'satysfi-inline-command-face t))
