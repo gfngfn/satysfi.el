@@ -86,6 +86,7 @@
 (define-key satysfi-mode-map (kbd "C-c C-t") 'satysfi-mode/typeset)
 (define-key satysfi-mode-map (kbd "C-c C-f") 'satysfi-mode/open-pdf)
 
+;;;###autoload
 (define-generic-mode satysfi-mode
   '(?%)
 
@@ -109,3 +110,8 @@
 
   nil
   '((lambda () (use-local-map satysfi-mode-map))))
+
+;;;###autoload
+(add-to-list 'auto-mode-alist
+             '("\\.\\(saty\\|satyh\\)\\'"
+               . satysfi-mode))
