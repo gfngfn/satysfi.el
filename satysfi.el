@@ -4,6 +4,24 @@
 
 (provide 'satysfi)
 
+(defgroup satysfi nil
+  "Major mode for SATySFi."
+  :group 'text)
+
+(defcustom satysfi-pdf-viewer-command "open"
+  "Command to open the PDF file."
+  :type 'file
+  :group 'satysfi)
+
+(defcustom satysfi-command "opam exec satysfi -- -b"
+  "Command to run SATySFi."
+  :type 'file
+  :group 'satysfi)
+
+(defcustom satysfi-compilation-window-height 10
+  "Number of lines in a compilation window of SATySFi.
+If nil, use Emacs default."
+  :type '(choice (const nil) integer))
 
 (defface satysfi-inline-command-face
   '((t (:foreground "#8888ff")))
@@ -24,10 +42,6 @@
 (defface satysfi-literal-area
   '((t (:foreground "#ffff44")))
   "SATySFi literal area")
-
-(defvar satysfi-pdf-viewer-command "open")
-
-(defvar satysfi-command "satysfi -b")
 
 (defun satysfi-mode/insert-pair-scheme (open-string close-string)
   (cond ((use-region-p)
@@ -64,18 +78,44 @@
   (interactive)
   (satysfi-mode/insert-pair-scheme "${" "}"))
 
+(defun satysfi-mode/remove-tramp-prefix (filename)
+  (if (string-match-p ":" filename)
+      ;; If it does, remove the prefix
+      (replace-regexp-in-string ".*:" "" filename)
+    ;; If it doesn't, use the original filename
+    filename))
+
 (defun satysfi-mode/open-pdf ()
   (interactive)
   (let ((pdf-file-path (concat (file-name-sans-extension buffer-file-name) ".pdf")))
     (progn
       (message "Opening '%s' ..." pdf-file-path)
-      (async-shell-command (format "%s %s\n" satysfi-pdf-viewer-command pdf-file-path)))))
+      (let ((escaped-pdf-file-path
+             (shell-quote-argument pdf-file-path)))
+        (async-shell-command
+         (format "%s %s\n" satysfi-pdf-viewer-command escaped-pdf-file-path))))))
 
 (defun satysfi-mode/typeset ()
   (interactive)
-  (progn
-    (message "Typesetting '%s' ..." buffer-file-name)
-    (async-shell-command (format "%s %s\n" satysfi-command buffer-file-name))))
+  (let ((local-file-name (satysfi-mode/remove-tramp-prefix buffer-file-name)))
+    (progn
+      (defun satysfi-mode/compilation-hook ()
+        (when (not (get-buffer-window "*compilation*"))
+          (save-selected-window
+            (save-excursion
+              (let* ((w (split-window-vertically))
+                     (h (window-height w)))
+                (select-window w)
+                (switch-to-buffer "*compilation*")
+                (shrink-window (- h compilation-window-height)))))))
+      (add-hook 'compilation-mode-hook 'satysfi-mode/compilation-hook)
+      (message "Typesetting '%s' ..." local-file-name)
+      (let ((escaped-buffer-file-name
+             (shell-quote-argument local-file-name))
+            (compilation-window-height satysfi-compilation-window-height))
+        (compilation-start
+         (format "%s %s\n" satysfi-command escaped-buffer-file-name)))
+      (remove-hook 'compilation-mode-hook 'satysfi-mode/compilation-hook))))
 
 (defvar satysfi-mode-map (copy-keymap global-map))
 (define-key satysfi-mode-map (kbd "(") 'satysfi-mode/insert-paren-pair)

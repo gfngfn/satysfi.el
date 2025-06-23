@@ -10,7 +10,7 @@ add the following commands to your `init.el`:
 (add-to-list 'auto-mode-alist '("\\.saty$" . satysfi-mode))
 (add-to-list 'auto-mode-alist '("\\.satyh$" . satysfi-mode))
 (setq satysfi-command "satysfi")
-  ; set the command for typesetting (default: "satysfi -b")
+  ; set the command for typesetting (default: "opam exec satysfi -- -b")
 (setq satysfi-pdf-viewer-command "sumatrapdf")
   ; set the command for opening PDF files (default: "open")
 ```
